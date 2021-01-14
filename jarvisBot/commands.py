@@ -1,31 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import logging
-
-import requests
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import requests
 
-# Enable logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
 
-logger = logging.getLogger(__name__)
-
-def send_message(update, context, msg):
+def send_message(update, context, msg) -> None:
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
 
-def c_bot(update, context):
+
+def c_bot(update, context) -> None:
     # /bot
     send_message(update, context, 'Hello there! I\'m JarvisBot, a bot for group management.\n\nFor a list of commands, type /commands')
 
 
-def c_commands(update, context):
-    # /commands 
+def c_commands(update, context) -> None:
+    # /commands
     send_message(update, context, 'Command list for JarvisBot:\n/bot - Display general info about the bot\n/commands - Display a list of commands\n/lyrics - Display the lyrics of a song')
 
-def c_lyrics(update, context):
+
+def c_lyrics(update, context) -> None:
     # /lyrics [artist]; [song-name]
     args = ' '.join(context.args)
 
@@ -36,9 +29,9 @@ def c_lyrics(update, context):
             args = args[1:]
 
             if l == ';':
-                break;
+                break
             artist += l
-        
+
         # Remove extra space on index 0
         song = args[1:].title()
 
@@ -55,10 +48,11 @@ def c_lyrics(update, context):
 
     send_message(update, context, msg)
 
-def c_kick(update, context):
+
+def c_kick(update, context) -> None:
     chat_id = update.message.chat_id
     prev_msg = update.message.reply_to_message
-    
+
     if not prev_msg:
         msg = 'Usage: reply to a message of the user you want to kick with /kick'
     else:
@@ -79,7 +73,8 @@ def c_kick(update, context):
 
     send_message(update, context, msg)
 
-def kick_member(bot, chat_id, user_id):
+
+def kick_member(bot, chat_id, user_id) -> int:
     return_code = 0
     try:
         user_data = bot.getChatMember(chat_id, user_id)
@@ -94,35 +89,5 @@ def kick_member(bot, chat_id, user_id):
             return_code = -2
         elif str(e) == "User is an administrator of the chat":
             return_code = -3
-    
+
     return return_code
-        
-
-def error(update, context):
-    #Log Errors caused by Updates.
-    logger.warning('Update "%s" caused error "%s"', update, context.error)
-
-
-def main():
-    updater = Updater('1558636323:AAH3E_r8BwuXn5m-ta2Ow10bgoxM-K2hQ80', use_context=True)
-
-    # Get the dispatcher to register handlers
-    dp = updater.dispatcher
-
-    dp.add_handler(CommandHandler('bot', c_bot))
-    dp.add_handler(CommandHandler('commands', c_commands))
-    dp.add_handler(CommandHandler('lyrics', c_lyrics, run_async = True))
-    dp.add_handler(CommandHandler('kick', c_kick, run_async = True))
-
-    # log all errors
-    dp.add_error_handler(error)
-
-    # Start the Bot
-    updater.start_polling()
-
-    # Stop the bot grecefully. Do not remove this shit!
-    updater.idle()
-
-
-if __name__ == '__main__':
-    main()
