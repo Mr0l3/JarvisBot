@@ -69,7 +69,7 @@ To run the bot, do the following:
     pipenv run python jarvisBot/main.py
     ```
 
-To stop the bot, just press Ctrl+C int the terminal and wait a few seconds until the bot stop execution
+To stop the bot, just press Ctrl+C in the terminal and wait a few seconds until the bot stop execution
 
 ## Contributing
 1. Fork the Project
