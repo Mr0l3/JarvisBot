@@ -1,6 +1,6 @@
 <p align="center">
     <img src="jarvisBot-image.png" width="180">
-    <h3 align="center">JarvisBot</h3>
+    <h1 align="center">JarvisBot</h1>
 </p>
 
 <!-- TABLE OF CONTENTS -->

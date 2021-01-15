@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import requests
+from telegram.constants import PARSEMODE_HTML
 
-
-def send_message(update, context, msg) -> None:
-    context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
+def send_message(update, context, msg, parse_HTML = False) -> None:
+    if parse_HTML:
+        context.bot.send_message(chat_id=update.effective_chat.id, text = msg, parse_mode = PARSEMODE_HTML)
+    else: 
+        context.bot.send_message(chat_id=update.effective_chat.id, text = msg)
 
 
 def c_bot(update, context) -> None:
@@ -16,37 +18,6 @@ def c_bot(update, context) -> None:
 def c_commands(update, context) -> None:
     # /commands
     send_message(update, context, 'Command list for JarvisBot:\n/bot - Display general info about the bot\n/commands - Display a list of commands\n/lyrics - Display the lyrics of a song')
-
-
-def c_lyrics(update, context) -> None:
-    # /lyrics [artist]; [song-name]
-    args = ' '.join(context.args)
-
-    if len(args) > 1:
-        artist = ''
-        for l in args:
-            # Remove the first character on each iteration
-            args = args[1:]
-
-            if l == ';':
-                break
-            artist += l
-
-        # Remove extra space on index 0
-        song = args[1:].title()
-
-        artist = artist.title()
-
-        rq = requests.get(f'https://api.lyrics.ovh/v1/{artist}/{song}')
-        lyrics = rq.json()['lyrics'].strip()
-        if lyrics:
-            msg = f'{artist} - {song}\n\n{lyrics}'
-        else:
-            msg = 'Lyrics not found'
-    else:
-        msg = 'Usage: /lyrics artist; song-name\nExample: /lyrics drake; god\'s plan'
-
-    send_message(update, context, msg)
 
 
 def c_kick(update, context) -> None:

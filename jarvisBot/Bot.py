@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import logging
+import logging, commands, misc_commands
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-import commands
 
 
 class Bot:
-    __TOKEN = 'TOKEN HERE'
+    __TOKEN = ''
     __updater: Updater
     __logger: logging
 
@@ -18,14 +17,14 @@ class Bot:
         self.__logger = logging.getLogger(__name__)
 
         # start updater
-        self.updater = Updater(self.__TOKEN, use_context=True)
+        self.__updater = Updater(self.__TOKEN, use_context=True)
 
         # Get the dispatcher to register handlers
-        dp = self.updater.dispatcher
+        dp = self.__updater.dispatcher
 
         dp.add_handler(CommandHandler('bot', commands.c_bot))
         dp.add_handler(CommandHandler('commands', commands.c_commands))
-        dp.add_handler(CommandHandler('lyrics', commands.c_lyrics, run_async=True))
+        dp.add_handler(CommandHandler('lyrics', misc_commands.c_lyrics, run_async=True))
         dp.add_handler(CommandHandler('kick', commands.c_kick, run_async=True))
 
         # log all errors
@@ -38,7 +37,7 @@ class Bot:
 
     def startBot(self) -> None:
         # Start the Bot
-        self.updater.start_polling()
+        self.__updater.start_polling()
 
         # Stop the bot grecefully. Do not remove this shit!
-        self.updater.idle()
+        self.__updater.idle()
